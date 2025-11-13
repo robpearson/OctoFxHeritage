@@ -43,7 +43,7 @@ jobs:
         with:
           package_id: OctoFX.Web
           version: ${{ env.PACKAGE_VERSION }}
-          base_path: ./OctoFx/OctoFx.Web/bin/release/net8.0/publish
+          base_path: ./OctoFx/OctoFx.Web/bin/Release/net8.0/publish/
           files: |
            **/*
           output_folder: ./packaging
