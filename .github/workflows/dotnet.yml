@@ -41,7 +41,7 @@ jobs:
       - name: Package Frontend Changes
         uses: OctopusDeploy/create-zip-package-action@v3.0.2
         with:
-          package_id: OctoFX.Web
+          package_id: OctoFx.Web
           version: ${{ env.PACKAGE_VERSION }}
           base_path: ./OctoFx/OctoFx.Web/bin/Release/net8.0/publish/
           files: |
@@ -52,15 +52,14 @@ jobs:
         uses: OctopusDeploy/push-package-action@v3.0.4
         with:
           packages: |
-            ./packaging/OctoFX.Web.${{ env.PACKAGE_VERSION }}.zip
+            ./packaging/OctoFx.Web.${{ env.PACKAGE_VERSION }}.zip
 
       - name: Push Build Information
-        uses: OctopusDeploy/push-build-information-action@v3
-        
+        uses: OctopusDeploy/push-build-information-action@v3       
         with:
-          version: env.PACKAGE_VERSION
-          packages: |
-            OctoFX.Web
+          version: ${{env.PACKAGE_VERSION}}
+          packages: OctoFx.Web
+          overwriteMode: OverwriteExisting
           
       # - name: Create Octopus Release
       #   uses: OctopusDeploy/create-release-action@v3
