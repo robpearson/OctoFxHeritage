@@ -1,25 +1,66 @@
-name: CI Buid
+name: CI Build
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:    
+      - 'main'        # main branch
+      - 'FINT-**'     # Feature branches
+      - 'rp-**'       # Rob Pearson demo branches
+
+env:
+  OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+  OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+  OCTOPUS_SPACE: ${{ secrets.OCTOPUS_SPACE }}
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore ./OctoFx/OctoFxLegacy.sln
+      - name: Build
+        run: dotnet publish --no-restore ./OctoFx/OctoFxLegacy.sln
+#      - name: Test
+#        run: dotnet test --no-build --verbosity normal
+      
+      - name: Set Version
+        run: echo "PACKAGE_VERSION=8.10.$((1+GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
+
+      # - name: Package Frontend Changes
+      #   uses: OctopusDeploy/create-zip-package-action@v3.0.2
+      #   with:
+      #     package_id: OctoFX.Web
+      #     version: ${{ env.PACKAGE_VERSION }}
+      #     base_path: ./OctoFx/OctoFx.Web/bin/release/net8.0/publish
+      #     files: |
+      #      **/*
+      #     output_folder: ./packaging
+
+      # - name: Push Packages and Containers
+      #   uses: OctopusDeploy/push-package-action@v3.0.4
+      #   with:
+      #     packages: |
+      #       ./packaging/OctoFX.Web.${{ env.PACKAGE_VERSION }}.zip
+
+      # - name: Push Build Information
+      #   uses: OctopusDeploy/push-build-information-action@v3
+        
+      #   with:
+      #     version: env.PACKAGE_VERSION
+      #     packages: |
+      #       OctoFX.Web
+          
+      # - name: Create Octopus Release
+      #   uses: OctopusDeploy/create-release-action@v3
+      #   with: 
+      #     project: OctoFX
+      #     release_number: ${{ env.PACKAGE_VERSION }}
+      #     release_notes: 'GitHub Commits URL: ${{ github.event.pull_request.commits_url }}'
+      #     git_ref: ${{ github.head_ref || github.ref_name }} 
+        
