@@ -32,21 +32,27 @@ jobs:
       - name: Set Version
         run: echo "PACKAGE_VERSION=8.10.$((1+GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
 
-      # - name: Package Frontend Changes
-      #   uses: OctopusDeploy/create-zip-package-action@v3.0.2
-      #   with:
-      #     package_id: OctoFX.Web
-      #     version: ${{ env.PACKAGE_VERSION }}
-      #     base_path: ./OctoFx/OctoFx.Web/bin/release/net8.0/publish
-      #     files: |
-      #      **/*
-      #     output_folder: ./packaging
+      - name: Login to Octopus Deploy 
+        uses: OctopusDeploy/login@v1.0.1
+        with: 
+          server: https://robpearson.octopus.app
+          api_key: ${{secrets.OCTOPUS_API_KEY}}
 
-      # - name: Push Packages and Containers
-      #   uses: OctopusDeploy/push-package-action@v3.0.4
-      #   with:
-      #     packages: |
-      #       ./packaging/OctoFX.Web.${{ env.PACKAGE_VERSION }}.zip
+      - name: Package Frontend Changes
+        uses: OctopusDeploy/create-zip-package-action@v3.0.2
+        with:
+          package_id: OctoFX.Web
+          version: ${{ env.PACKAGE_VERSION }}
+          base_path: ./OctoFx/OctoFx.Web/bin/release/net8.0/publish
+          files: |
+           **/*
+          output_folder: ./packaging
+
+      - name: Push Packages and Containers
+        uses: OctopusDeploy/push-package-action@v3.0.4
+        with:
+          packages: |
+            ./packaging/OctoFX.Web.${{ env.PACKAGE_VERSION }}.zip
 
       # - name: Push Build Information
       #   uses: OctopusDeploy/push-build-information-action@v3
