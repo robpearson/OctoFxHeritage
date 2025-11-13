@@ -15,6 +15,9 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        // TODO: This is a demo change.
+        // A realistic change would be evolving business logic or adding new user functionality
+        
         return View();
     }
 
