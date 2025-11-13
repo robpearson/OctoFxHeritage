@@ -54,13 +54,13 @@ jobs:
           packages: |
             ./packaging/OctoFX.Web.${{ env.PACKAGE_VERSION }}.zip
 
-      # - name: Push Build Information
-      #   uses: OctopusDeploy/push-build-information-action@v3
+      - name: Push Build Information
+        uses: OctopusDeploy/push-build-information-action@v3
         
-      #   with:
-      #     version: env.PACKAGE_VERSION
-      #     packages: |
-      #       OctoFX.Web
+        with:
+          version: env.PACKAGE_VERSION
+          packages: |
+            OctoFX.Web
           
       # - name: Create Octopus Release
       #   uses: OctopusDeploy/create-release-action@v3
